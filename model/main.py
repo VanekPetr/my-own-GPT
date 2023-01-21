@@ -1,4 +1,5 @@
 import torch
+from model.language_model import BigramLanguageModel
 
 # Load the data
 with open('data/shakespeare.txt', 'r', encoding='utf-8') as f:
@@ -45,11 +46,6 @@ def get_batch(split):
 
 xb, yb = get_batch('train')
 
-
-for b in range(batch_size):     # batch dimension
-    for t in range(block_size):     # time dimension
-        context = xb[b, :t+1]
-        target = yb[b, t]
-        print(f"when input is {context.tolist()} the target: {target}")
-
-# TODO: Bigram Language model
+m = BigramLanguageModel(vocab_size)
+out, out_loss = m(xb, yb)
+print(out.shape, out_loss)
