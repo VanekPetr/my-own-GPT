@@ -46,7 +46,9 @@ print(decode(m.generate(idx=torch.zeros((1, 1), dtype=torch.long), max_new_token
 
 
 # train the model
-trained_model = train_gpt(m, train_data, batch_size=32, block_size=8, number_of_epochs=10000)
+trained_model = train_gpt(m, train_data, val_data,
+                          batch_size=32, block_size=8, number_of_epochs=10000, eval_interval=1000)
+
 # generate text from the model
 context = torch.zeros((1, 1), dtype=torch.long)
 generated_text = decode(trained_model.generate(context, max_new_tokens=500)[0].tolist())
