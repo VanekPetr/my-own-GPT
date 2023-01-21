@@ -41,11 +41,13 @@ xb, yb = get_batch(train_data, batch_size, block_size)
 m = BigramLanguageModel(vocab_size)
 out, out_loss = m(xb, yb)
 print(out.shape, out_loss)
-# test this simple model
+# test it with no hope
 print(decode(m.generate(idx=torch.zeros((1, 1), dtype=torch.long), max_new_tokens=100)[0].tolist()))
 
 
 # train the model
 trained_model = train_gpt(m, train_data, batch_size=32, block_size=8, number_of_epochs=10000)
-# test it
-print(decode(trained_model.generate(idx=torch.zeros((1, 1), dtype=torch.long), max_new_tokens=300)[0].tolist()))
+# generate text from the model
+context = torch.zeros((1, 1), dtype=torch.long)
+generated_text = decode(trained_model.generate(context, max_new_tokens=500)[0].tolist())
+print(generated_text)

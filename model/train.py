@@ -1,14 +1,7 @@
 import torch
 import os
 from model.language_model import BigramLanguageModel
-
-
-def get_batch(data, batch_size, block_size):
-    # generate a small batch of data of inputs x and targets y
-    ix = torch.randint(len(data) - block_size, (batch_size,))
-    x = torch.stack([data[i:i+block_size] for i in ix])
-    y = torch.stack([data[i+1:i+block_size+1] for i in ix])
-    return x, y
+from model.data_loader import get_batch
 
 
 def train_gpt(model, train_data, batch_size: int = 32, block_size: int = 8, number_of_epochs: int = 100):
