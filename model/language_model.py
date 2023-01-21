@@ -17,7 +17,7 @@ class BigramLanguageModel(nn.Module):
         logits = self.token_embeddings_table(idx)   # (Batch = 4, Time = 8, Channel = 65)
         loss = None
 
-        if targets:
+        if targets is not None:
             # to be able to use cross entropy loss, we need to flatten the logits and targets
             _, _, channels = logits.shape
             logits = logits.view(-1, channels)  # (Batch * Time, Channel = 65)
