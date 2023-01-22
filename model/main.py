@@ -8,6 +8,7 @@ from model.data_loader import get_tran_val_spit, get_vocabulary_size
 def train_and_generate_with_gpt(text):
     # *** MODEL ***
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print(f"Training with: {device}")
 
     # hyperparameters
     n_embeddings = 384 if device == 'cuda' else 32
