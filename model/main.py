@@ -5,7 +5,7 @@ from model.train import train_gpt
 from model.data_loader import get_tran_val_spit, get_vocabulary_size
 
 
-def train_and_generate_with_gpt(text):
+def train_and_generate_with_gpt(text, save_model=False):
     # *** MODEL ***
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     print(f"Training with: {device}")
@@ -36,6 +36,8 @@ def train_and_generate_with_gpt(text):
     trained_model = train_gpt(m, train_data, val_data,
                               batch_size=batch_size, block_size=block_size, number_of_epochs=max_iters,
                               eval_interval=eval_interval, eval_iters=eval_iters, learning_rate=learning_rate)
+    if save_model:
+        torch.save(trained_model, os.path.join(os.path.dirname(os.getcwd()), 'data/pre_trained_model.pt'))
 
     # *** SHOW RESULTS ***
     # decoder: take a list of integers, output a string
@@ -56,4 +58,4 @@ if __name__ == '__main__':
     with open(os.path.join(os.path.dirname(os.getcwd()), 'data/shakespeare.txt'), 'r', encoding='utf-8') as f:
         data = f.read()
 
-    train_and_generate_with_gpt(data)
+    train_and_generate_with_gpt(data, save_model=True)
