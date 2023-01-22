@@ -5,7 +5,7 @@ from model.data_loader import get_batch
 
 
 @torch.no_grad()
-def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_iters = 200):
+def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_iters=200):
     out = {}
     # switch model to evaluation mode
     model.eval()

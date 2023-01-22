@@ -7,14 +7,16 @@ class BigramLanguageModel(nn.Module):
     """
     Simple bigram language model
     """
-    def __init__(self, vocabulary_size):
+    def __init__(self, vocabulary_size, n_embeddings=32):
         super().__init__()
         # each toke directly reads off the logits for the next token from a lookup table
-        self.token_embeddings_table = nn.Embedding(vocabulary_size, vocabulary_size)
+        self.token_embeddings_table = nn.Embedding(vocabulary_size, n_embeddings)
+        self.lm_head = nn.Linear(n_embeddings, vocabulary_size)
 
     def forward(self, idx, targets=None):
         # idx and targets are both (B, T) tensor of integers
-        logits = self.token_embeddings_table(idx)   # (Batch = 4, Time = 8, Channel = 65)
+        token_embeddings = self.token_embeddings_table(idx)   # (Batch = 4, Time = 8, Channel = n_embeddings)
+        logits = self.lm_head(token_embeddings)  # (Batch = 4, Time = 8, Channel = vocabulary_size)
         loss = None
 
         if targets is not None:
