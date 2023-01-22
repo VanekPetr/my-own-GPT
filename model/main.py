@@ -8,12 +8,14 @@ from model.data_loader import get_tran_val_spit, get_vocabulary_size
 def train_and_generate_with_gpt(text):
     # *** MODEL ***
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
     # hyperparameters
-    vocab_size = get_vocabulary_size(text)
     n_embeddings = 384 if device == 'cuda' else 32
     n_heads = 6 if device == 'cuda' else 4
-    n_layers = 6
     block_size = 256 if device == 'cuda' else 8   # what is the maximum context length for predictions?
+    n_layers = 6
+
+    vocab_size = get_vocabulary_size(text)
 
     # initialization
     model = BigramLanguageModel(vocab_size, n_embeddings, n_heads, n_layers, block_size)
@@ -25,9 +27,9 @@ def train_and_generate_with_gpt(text):
 
     # train parameters
     batch_size = 64 if device == 'cuda' else 4     # how many independent sequences will we process in parallel?
+    learning_rate = 3e-4 if device == 'cuda' else 1e-3
     max_iters = 5000
     eval_interval = 500
-    learning_rate = 3e-4 if device == 'cuda' else 1e-4
     eval_iters = 200
 
     trained_model = train_gpt(m, train_data, val_data,
