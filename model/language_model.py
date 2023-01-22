@@ -28,9 +28,7 @@ class Head(nn.Module):
 
 
 class BigramLanguageModel(nn.Module):
-    """
-    Simple bigram language model
-    """
+    """ Simple bigram language model """
     def __init__(self, vocabulary_size, n_embeddings=32, block_size=32):
         super().__init__()
         # each toke directly reads off the logits for the next token from a lookup table

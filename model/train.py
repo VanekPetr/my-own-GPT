@@ -1,7 +1,7 @@
 import torch
 import os
 from model.language_model import BigramLanguageModel
-from model.data_loader import get_batch
+from model.data_loader import get_batch, get_tran_val_spit, get_vocabulary_size
 
 
 @torch.no_grad()
@@ -49,20 +49,10 @@ if __name__ == '__main__':
     # Load the data
     with open(os.path.join(os.path.dirname(os.getcwd()), 'data/shakespeare.txt'), 'r', encoding='utf-8') as f:
         text = f.read()
-    chars = sorted(list(set(text)))
-    vocab_size = len(chars)
 
-    stoi = {ch: i for i, ch in enumerate(chars)}
-    encode = lambda s: [stoi[c] for c in s]  # encoder: take a string, output a list of integers
-
-    # encode the entire text dataset and store it into a torch.Tensor
-    all_data = torch.tensor(encode(text), dtype=torch.long)
-
-    # split up the data into train and validation sets, use only train data
-    n = int(0.9 * len(all_data))  # first 90% will be a train, rest val
-    training_data = all_data[:n]
-    validation_data = all_data[n:]
-
+    # pre-process data
+    training_data, validation_data = get_tran_val_spit(text)
+    vocab_size = get_vocabulary_size(text)
     # define model
     m = BigramLanguageModel(vocab_size)
 
