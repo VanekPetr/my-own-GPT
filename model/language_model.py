@@ -7,18 +7,23 @@ class BigramLanguageModel(nn.Module):
     """
     Simple bigram language model
     """
-    def __init__(self, vocabulary_size, n_embeddings=32):
+    def __init__(self, vocabulary_size, n_embeddings=32, block_size=32):
         super().__init__()
         # each toke directly reads off the logits for the next token from a lookup table
         self.token_embeddings_table = nn.Embedding(vocabulary_size, n_embeddings)
+        # block_size: maximum context length for predictions
+        self.positional_embeddings_table = nn.Embedding(block_size, n_embeddings)
         self.lm_head = nn.Linear(n_embeddings, vocabulary_size)
 
     def forward(self, idx, targets=None):
+        B, T = idx.shape
         # idx and targets are both (B, T) tensor of integers
         token_embeddings = self.token_embeddings_table(idx)   # (Batch = 4, Time = 8, Channel = n_embeddings)
-        logits = self.lm_head(token_embeddings)  # (Batch = 4, Time = 8, Channel = vocabulary_size)
-        loss = None
+        positional_embeddings = self.positional_embeddings_table(torch.arange(T))  # (Time = 8, Channel = n_embeddings)
+        token_embeddings_plus_position = token_embeddings + positional_embeddings  # (B, T, C)
+        logits = self.lm_head(token_embeddings_plus_position)  # (Batch = 4, Time = 8, Channel = vocabulary_size)
 
+        loss = None
         if targets is not None:
             # to be able to use cross entropy loss, we need to flatten the logits and targets
             _, _, channels = logits.shape
