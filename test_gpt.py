@@ -18,11 +18,13 @@ def generate_shakespeare(number_of_characters, block_size=256):
     decode = lambda l: ''.join([itos[i] for i in l])
 
     # download model
-    trained_model = torch.load('data/pre_trained_model.pt')
+    trained_model = torch.load('data/pre_trained_model.pt', map_location=torch.device(device))
 
     # generate text from the model
     context = torch.zeros((1, 1), dtype=torch.long, device=device)
-    generated_text = decode(trained_model.generate(context, max_new_tokens=number_of_characters, block_size=block_size)[0].tolist())
+    generated_text = decode(trained_model.generate(context,
+                                                   max_new_tokens=number_of_characters,
+                                                   block_size=block_size)[0].tolist())
 
     print('Generated Shakespeare:')
     print(generated_text)
