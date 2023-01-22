@@ -22,10 +22,10 @@ def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_iter
 
 def train_gpt(model, train_data, val_data,
               batch_size: int = 32, block_size: int = 8, number_of_epochs: int = 100,
-              eval_interval: int = 100, eval_iters: int = 100):
+              eval_interval: int = 100, eval_iters: int = 100, learning_rate: float = 3e-4):
 
     # create a PyTorch optimizer
-    optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
     for epoch in range(number_of_epochs):  # increase number of steps for good results...
 

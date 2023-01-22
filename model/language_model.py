@@ -20,7 +20,10 @@ class BigramLanguageModel(nn.Module):
         B, T = idx.shape
         # idx and targets are both (B, T) tensor of integers
         token_embeddings = self.token_embeddings_table(idx)   # (Batch = 4, Time = 8, Channel = n_embeddings)
-        positional_embeddings = self.positional_embeddings_table(torch.arange(T))  # (Time = 8, Channel = n_embeddings)
+
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        positional_embeddings = self.positional_embeddings_table(torch.arange(T, device=device))
+
         token_embeddings_plus_position = token_embeddings + positional_embeddings  # (B, T, C)
         x = self.blocks(token_embeddings_plus_position)  # apply one head of self attention, (B, T, C)
         x = self.ln_f(x)  # (B,T,C)
