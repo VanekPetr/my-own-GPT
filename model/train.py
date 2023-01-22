@@ -5,7 +5,7 @@ from model.data_loader import get_batch, get_tran_val_spit, get_vocabulary_size
 
 
 @torch.no_grad()
-def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_iters=200):
+def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_iters):
     out = {}
     # switch model to evaluation mode
     model.eval()
@@ -21,16 +21,17 @@ def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_iter
 
 
 def train_gpt(model, train_data, val_data,
-              batch_size: int = 32, block_size: int = 8, number_of_epochs: int = 100, eval_interval: int = 10):
+              batch_size: int = 32, block_size: int = 8, number_of_epochs: int = 100,
+              eval_interval: int = 100, eval_iters: int = 100):
 
     # create a PyTorch optimizer
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
 
     for epoch in range(number_of_epochs):  # increase number of steps for good results...
 
         # every once in a while evaluate the loss on train and val sets
         if epoch % eval_interval == 0 or epoch == number_of_epochs - 1:
-            losses = estimate_loss(model, train_data, val_data, batch_size, block_size)
+            losses = estimate_loss(model, train_data, val_data, batch_size, block_size, eval_iters)
             print(f"epoch {epoch}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
 
         # sample a batch of data
@@ -58,4 +59,4 @@ if __name__ == '__main__':
 
     # *** TRAINING ***
     trained_model = train_gpt(m, training_data, validation_data,
-                              batch_size=32, block_size=8, number_of_epochs=10000, eval_interval=1000)
+                              batch_size=32, block_size=8, number_of_epochs=5000, eval_interval=500)
