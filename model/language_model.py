@@ -21,7 +21,6 @@ class Head(nn.Module):
         wei = q @ k.transpose(-2, -1) * C**-0.5     # (B, T, C) @ (B, C, T) -> (B, T, T)
         wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf'))    # (B, T, T)
         wei = F.softmax(wei, dim=-1)    # (B, T, T)
-        wei = self.dropout(wei)
         # perform the weighted aggregation of the values
         v = self.value(x)   # (B,T,C)
         out = wei @ v   # (B, T, T) @ (B, T, C) -> (B, T, C)
