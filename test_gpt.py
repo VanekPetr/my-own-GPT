@@ -1,4 +1,6 @@
 import torch
+import os
+from huggingface_hub import snapshot_download
 
 
 def generate_shakespeare(number_of_characters, block_size=256):
@@ -20,7 +22,11 @@ def generate_shakespeare(number_of_characters, block_size=256):
 
     # download model
     print('--> Downloading model...')
-    trained_model = torch.load('data/pre_trained_model.pt', map_location=torch.device(device))
+    model_file_name = "pre_trained_model.pt"
+    repo_name = "VanekPetr/shakespeare-like-gpt"
+    model_dir = snapshot_download(repo_name)
+    model_path = os.path.join(model_dir, model_file_name)
+    trained_model = torch.load(model_path, map_location=torch.device(device))
 
     # generate text from the model
     context = torch.zeros((1, 1), dtype=torch.long, device=device)
